@@ -53,7 +53,7 @@ class StatusCheckerThread(Thread):
 
 
 if __name__ == "__main__":
-    with StatusCheckerThread(MongoDBLogger(MongoClient(mongodb_config)),
+    with StatusCheckerThread(MongoDBLogger(MongoClient(mongodb_config['url'])),
                              RpiMemoryStatusChecker(),
                              RpiTempStatusChecker()) as th:
         th.start()
