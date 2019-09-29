@@ -10,6 +10,8 @@ mongodb_config = {
     "url": ""
 }
 
+mongodb_config['url'] = mongodb_config['urlPattern'].format(**mongodb_config)
+
 app_config = {
     # in seconds
     "loggingInterval": 60
