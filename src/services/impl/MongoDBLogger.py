@@ -18,7 +18,7 @@ class MongoDBLogger(Logger):
         collection = self.mongodb[self.database][self.collection]
         date = datetime.now().timestamp()
 
-        data['date'] = date
+        data['timestamp'] = date
 
         print(data)
 
