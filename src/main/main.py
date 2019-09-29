@@ -5,11 +5,11 @@ from pymongo import MongoClient
 from threading import Thread
 
 from src.services import Logger, MemoryStatusChecker
-from src.services.TempStatusChecker import TempChecker
+from src.services.TempStatusChecker import TempStatusChecker
 from src.services.impl.FileLogger import FileLogger
 from src.services.impl.MongoDBLogger import MongoDBLogger
 from src.services.impl.RpiMemoryStatusChecker import RpiMemoryStatusChecker
-from src.services.impl.RpiTempStatusChecker import RpiTempChecker
+from src.services.impl.RpiTempStatusChecker import RpiTempStatusChecker
 
 from src.configs.config import mongodb_config
 from src.configs.config import app_config
@@ -22,12 +22,12 @@ if len(sys.argv) > 0 and sys.argv[-1] == "dev":
 
 class StatusCheckerThread(Thread):
     logger: Logger
-    tempChecker: TempChecker
+    tempChecker: TempStatusChecker
     memoryChecker: MemoryStatusChecker
 
     def __init__(self, logger: Logger = FileLogger(),
                  memoryChecker: MemoryStatusChecker = RpiMemoryStatusChecker(),
-                 tempChecker: TempChecker = RpiTempChecker()):
+                 tempChecker: TempStatusChecker = RpiTempStatusChecker()):
         super().__init__()
         self.tempChecker = tempChecker
         self.memoryChecker = memoryChecker

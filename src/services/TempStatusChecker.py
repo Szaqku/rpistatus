@@ -1,7 +1,7 @@
 from abc import abstractmethod
 
 
-class TempChecker:
+class TempStatusChecker:
 
     @abstractmethod
     def get_temp(self):
