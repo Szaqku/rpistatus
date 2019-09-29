@@ -6,7 +6,6 @@ from threading import Thread
 
 from src.services import Logger, MemoryStatusChecker
 from src.services.TempStatusChecker import TempStatusChecker
-from src.services.impl.FileLogger import FileLogger
 from src.services.impl.MongoDBLogger import MongoDBLogger
 from src.services.impl.RpiMemoryStatusChecker import RpiMemoryStatusChecker
 from src.services.impl.RpiTempStatusChecker import RpiTempStatusChecker
@@ -25,9 +24,9 @@ class StatusCheckerThread(Thread):
     tempChecker: TempStatusChecker
     memoryChecker: MemoryStatusChecker
 
-    def __init__(self, logger: Logger = FileLogger(),
-                 memoryChecker: MemoryStatusChecker = RpiMemoryStatusChecker(),
-                 tempChecker: TempStatusChecker = RpiTempStatusChecker()):
+    def __init__(self, logger: Logger,
+                 memoryChecker: MemoryStatusChecker,
+                 tempChecker: TempStatusChecker):
         super().__init__()
         self.tempChecker = tempChecker
         self.memoryChecker = memoryChecker
@@ -54,5 +53,7 @@ class StatusCheckerThread(Thread):
 
 
 if __name__ == "__main__":
-    with StatusCheckerThread(MongoDBLogger(MongoClient(mongodb_config))) as th:
+    with StatusCheckerThread(MongoDBLogger(MongoClient(mongodb_config)),
+                             RpiMemoryStatusChecker(),
+                             RpiTempStatusChecker()) as th:
         th.start()
