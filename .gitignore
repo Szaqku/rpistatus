@@ -1,0 +1,5 @@
+# Dev-defined
+src/configs/_config.py
+src/main/test.py
+
+.idea/
