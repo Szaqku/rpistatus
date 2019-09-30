@@ -10,24 +10,19 @@ from src.services.impl.MongoDBLogger import MongoDBLogger
 from src.services.impl.RpiMemoryStatusChecker import RpiMemoryStatusChecker
 from src.services.impl.RpiTempStatusChecker import RpiTempStatusChecker
 
-from src.configs.config import mongodb_config
-from src.configs.config import app_config
-
-if len(sys.argv) > 0 and sys.argv[-1] == "dev":
-    configs = importlib.import_module("src.configs._config")
-    mongodb_config = configs.mongodb_config
-    app_config = configs.app_config
-
 
 class StatusCheckerThread(Thread):
     logger: Logger
     tempChecker: TempStatusChecker
     memoryChecker: MemoryStatusChecker
+    refreshInterval: int
 
     def __init__(self, logger: Logger,
                  memoryChecker: MemoryStatusChecker,
-                 tempChecker: TempStatusChecker):
+                 tempChecker: TempStatusChecker,
+                 refreshInterval: int = 60):
         super().__init__()
+        self.refreshInterval = refreshInterval
         self.tempChecker = tempChecker
         self.memoryChecker = memoryChecker
         self.logger = logger
@@ -43,7 +38,8 @@ class StatusCheckerThread(Thread):
             data["memory"] = memory
 
             self.logger.log(data)
-            time.sleep(app_config['loggingInterval'])
+
+            time.sleep(self.refreshInterval)
 
     def __enter__(self):
         return self
@@ -53,7 +49,22 @@ class StatusCheckerThread(Thread):
 
 
 if __name__ == "__main__":
+    import src.configs.config as configs
+
+    if len(sys.argv) > 1:
+        try:
+            configs = importlib.import_module("src.configs." + sys.argv[1])
+        except ModuleNotFoundError as ex:
+            print("Couldn't load given config file with name: ", sys.argv[1])
+            print(ex)
+
+    mongodb_config = configs.mongodb_config
+    app_config = configs.app_config
+    print("Loaded config file: ", configs)
+
     with StatusCheckerThread(MongoDBLogger(MongoClient(mongodb_config['url'])),
                              RpiMemoryStatusChecker(),
-                             RpiTempStatusChecker()) as th:
+                             RpiTempStatusChecker(),
+                             app_config['loggingInterval']
+                             ) as th:
         th.start()
