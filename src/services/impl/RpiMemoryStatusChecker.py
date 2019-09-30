@@ -13,7 +13,7 @@ class RpiMemoryStatusChecker(MemoryStatusChecker):
 
         data = {}
         pattern = r"([\w./]+)"
-        output = (os.popen("free -h").read()).strip()
+        output = (os.popen("free -m").read()).strip()
 
         strings = output.split("\n")
         cols = re.findall(pattern, strings[0])
