@@ -4,9 +4,12 @@ import time
 from pymongo import MongoClient
 from threading import Thread
 
-from src.services import Logger, MemoryStatusChecker
+from src.services.Logger import Logger
+from src.services.MemoryStatusChecker import MemoryStatusChecker
+from src.services.CpuLoadStatusChecker import CpuLoadStatusChecker
 from src.services.TempStatusChecker import TempStatusChecker
 from src.services.impl.MongoDBLogger import MongoDBLogger
+from src.services.impl.RpiCpuLoadStatusChecker import RpiCpuLoadStatusChecker
 from src.services.impl.RpiMemoryStatusChecker import RpiMemoryStatusChecker
 from src.services.impl.RpiTempStatusChecker import RpiTempStatusChecker
 
@@ -15,13 +18,16 @@ class StatusCheckerThread(Thread):
     logger: Logger
     tempChecker: TempStatusChecker
     memoryChecker: MemoryStatusChecker
+    cpuLoadChecker: CpuLoadStatusChecker
     refreshInterval: int
 
     def __init__(self, logger: Logger,
                  memoryChecker: MemoryStatusChecker,
                  tempChecker: TempStatusChecker,
+                 cpuLoadChecker: CpuLoadStatusChecker,
                  refreshInterval: int = 60):
         super().__init__()
+        self.cpuLoadChecker = cpuLoadChecker
         self.refreshInterval = refreshInterval
         self.tempChecker = tempChecker
         self.memoryChecker = memoryChecker
@@ -36,6 +42,9 @@ class StatusCheckerThread(Thread):
 
             memory = self.memoryChecker.get_mem_usage()
             data["memory"] = memory
+
+            cpu_load = self.cpuLoadChecker.get_avg_cpu_load()
+            data["cpu_load"] = cpu_load
 
             self.logger.log(data)
 
@@ -65,6 +74,7 @@ if __name__ == "__main__":
     with StatusCheckerThread(MongoDBLogger(MongoClient(mongodb_config['url'])),
                              RpiMemoryStatusChecker(),
                              RpiTempStatusChecker(),
+                             RpiCpuLoadStatusChecker(),
                              app_config['loggingInterval']
                              ) as th:
         th.start()
