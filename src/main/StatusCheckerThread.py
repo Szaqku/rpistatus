@@ -11,6 +11,7 @@ from src.services.MemoryStatusChecker import MemoryStatusChecker
 from src.services.CpuLoadStatusChecker import CpuLoadStatusChecker
 from src.services.NetworkStatusChecker import NetworkStatusChecker
 from src.services.TempStatusChecker import TempStatusChecker
+from src.services.impl.LoggerFactoryImpl import LoggerFactoryImpl
 from src.services.impl.MongoDBLogger import MongoDBLogger
 from src.services.impl.RpiCpuLoadStatusChecker import RpiCpuLoadStatusChecker
 from src.services.impl.RpiMemoryStatusChecker import RpiMemoryStatusChecker
@@ -81,7 +82,7 @@ if __name__ == "__main__":
     app_config = configs.app_config
     print("Loaded config file: ", configs)
 
-    with StatusCheckerThread(MongoDBLogger(MongoClient(mongodb_config['url'])),
+    with StatusCheckerThread(LoggerFactoryImpl(configs).get_logger(name=app_config['logger']),
                              RpiMemoryStatusChecker(),
                              RpiTempStatusChecker(),
                              RpiCpuLoadStatusChecker(),
