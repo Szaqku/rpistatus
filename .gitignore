@@ -1,5 +1,5 @@
 # Dev-defined
 src/configs/_config.py
-src/main/test.py
+tests/test.py
 
 .idea/
