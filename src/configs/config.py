@@ -11,7 +11,12 @@ mongodb_config = {
 
 app_config = {
     # in seconds
-    "loggingInterval": 60
+    "loggingInterval": 60,
+
+    # implemented:
+    # MongoDBLogger / FileLogger
+    "logger": "FileLogger"
 }
 
+# Do not touch
 mongodb_config['url'] = mongodb_config['urlPattern'].format(**mongodb_config)
