@@ -20,6 +20,7 @@ class StatusCheckerThread(Thread):
     memoryChecker: MemoryStatusChecker
     cpuLoadChecker: CpuLoadStatusChecker
     refreshInterval: int
+    lastStatus: dict
 
     def __init__(self, logger: Logger,
                  memoryChecker: MemoryStatusChecker,
@@ -47,6 +48,7 @@ class StatusCheckerThread(Thread):
             data["cpu_load"] = cpu_load
 
             self.logger.log(data)
+            self.lastStatus = data
 
             time.sleep(self.refreshInterval)
 
