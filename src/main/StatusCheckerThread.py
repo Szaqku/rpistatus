@@ -1,6 +1,8 @@
 import importlib
 import sys
 import time
+from datetime import datetime
+
 from pymongo import MongoClient
 from threading import Thread
 
@@ -46,6 +48,8 @@ class StatusCheckerThread(Thread):
 
             cpu_load = self.cpuLoadChecker.get_avg_cpu_load()
             data["cpu_load"] = cpu_load
+
+            data['timestamp'] = datetime.now().timestamp()
 
             self.logger.log(data)
             self.lastStatus = data

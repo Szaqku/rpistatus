@@ -1,4 +1,3 @@
-from datetime import datetime
 from pymongo import MongoClient
 
 from src.services.Logger import Logger
@@ -16,9 +15,6 @@ class MongoDBLogger(Logger):
 
     def log(self, data: dict):
         collection = self.mongodb[self.database][self.collection]
-        date = datetime.now().timestamp()
-
-        data['timestamp'] = date
 
         print(data)
 
