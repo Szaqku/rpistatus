@@ -9,10 +9,12 @@ from threading import Thread
 from src.services.Logger import Logger
 from src.services.MemoryStatusChecker import MemoryStatusChecker
 from src.services.CpuLoadStatusChecker import CpuLoadStatusChecker
+from src.services.NetworkStatusChecker import NetworkStatusChecker
 from src.services.TempStatusChecker import TempStatusChecker
 from src.services.impl.MongoDBLogger import MongoDBLogger
 from src.services.impl.RpiCpuLoadStatusChecker import RpiCpuLoadStatusChecker
 from src.services.impl.RpiMemoryStatusChecker import RpiMemoryStatusChecker
+from src.services.impl.RpiNetworkStatusChecker import RpiNetworkStatusChecker
 from src.services.impl.RpiTempStatusChecker import RpiTempStatusChecker
 
 
@@ -21,6 +23,7 @@ class StatusCheckerThread(Thread):
     tempChecker: TempStatusChecker
     memoryChecker: MemoryStatusChecker
     cpuLoadChecker: CpuLoadStatusChecker
+    networkChecker: NetworkStatusChecker
     refreshInterval: int
     lastStatus: dict
 
@@ -28,8 +31,10 @@ class StatusCheckerThread(Thread):
                  memoryChecker: MemoryStatusChecker,
                  tempChecker: TempStatusChecker,
                  cpuLoadChecker: CpuLoadStatusChecker,
+                 networkChecker: NetworkStatusChecker,
                  refreshInterval: int = 60):
         super().__init__()
+        self.networkChecker = networkChecker
         self.cpuLoadChecker = cpuLoadChecker
         self.refreshInterval = refreshInterval
         self.tempChecker = tempChecker
@@ -40,14 +45,13 @@ class StatusCheckerThread(Thread):
         while True:
             data = {}
 
-            temp = self.tempChecker.get_temp()
-            data["temperature"] = temp
+            data["temperature"] = self.tempChecker.get_temp()
 
-            memory = self.memoryChecker.get_mem_usage()
-            data["memory"] = memory
+            data["memory"] = self.memoryChecker.get_mem_usage()
 
-            cpu_load = self.cpuLoadChecker.get_avg_cpu_load()
-            data["cpu_load"] = cpu_load
+            data["cpu_load"] = self.cpuLoadChecker.get_avg_cpu_load()
+
+            data["networks"] = self.networkChecker.get_network_status()
 
             data['timestamp'] = datetime.now().timestamp()
 
@@ -81,6 +85,7 @@ if __name__ == "__main__":
                              RpiMemoryStatusChecker(),
                              RpiTempStatusChecker(),
                              RpiCpuLoadStatusChecker(),
+                             RpiNetworkStatusChecker(),
                              app_config['loggingInterval']
                              ) as th:
         th.start()
