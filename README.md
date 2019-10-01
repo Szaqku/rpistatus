@@ -12,5 +12,9 @@ $ export PYTHONPATH='.'
 ##### 5. Config app in `src/configs/config.py`
 ##### 6. Run app
 ```sh
-$ python3 src/main/main.py
+$ python3 src/main/StatusCheckerThread.py
 ```
+
+## Additional dependencies
+###### [pymongo](https://api.mongodb.com/python/current/)
+###### [dnspython](https://pypi.org/project/dnspython/)
