@@ -3,7 +3,6 @@ import sys
 import time
 from datetime import datetime
 
-from pymongo import MongoClient
 from threading import Thread
 
 from src.services.Logger import Logger
@@ -12,7 +11,6 @@ from src.services.CpuLoadStatusChecker import CpuLoadStatusChecker
 from src.services.NetworkStatusChecker import NetworkStatusChecker
 from src.services.TempStatusChecker import TempStatusChecker
 from src.services.impl.LoggerFactoryImpl import LoggerFactoryImpl
-from src.services.impl.MongoDBLogger import MongoDBLogger
 from src.services.impl.RpiCpuLoadStatusChecker import RpiCpuLoadStatusChecker
 from src.services.impl.RpiMemoryStatusChecker import RpiMemoryStatusChecker
 from src.services.impl.RpiNetworkStatusChecker import RpiNetworkStatusChecker

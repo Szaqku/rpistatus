@@ -5,6 +5,7 @@ from src.services.MemoryStatusChecker import MemoryStatusChecker
 
 
 class RpiMemoryStatusChecker(MemoryStatusChecker):
+
     def get_mem_usage(self) -> dict:
         def create_dict_from_row(_cols: list, _values: list, _data: dict) -> None:
             _data[_values[0]] = {}
