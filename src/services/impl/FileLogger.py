@@ -6,8 +6,8 @@ from src.services.Logger import Logger
 class FileLogger(Logger):
     fileHandler: TextIO
 
-    def __init__(self, configs, filePath=None):
-        self.fileHandler = open(filePath if filePath is not None else configs.file_config['path'], "a+")
+    def __init__(self, fileName):
+        self.fileHandler = open(fileName, "a+")
 
     def log(self, data: any):
         self.fileHandler.write(str(data)+"\n")
