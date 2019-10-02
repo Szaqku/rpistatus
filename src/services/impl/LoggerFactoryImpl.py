@@ -4,6 +4,7 @@ from pymongo import MongoClient
 
 from src.services.Logger import Logger
 from src.services.LoggerFactory import LoggerFactory
+from src.services.impl.ConsoleLogger import ConsoleLogger
 from src.services.impl.FileLogger import FileLogger
 from src.services.impl.MongoDBLogger import MongoDBLogger
 
@@ -11,6 +12,7 @@ from src.services.impl.MongoDBLogger import MongoDBLogger
 class Loggers(Enum):
     toFile: str = "FileLogger"
     toMongoDB: str = "MongoDBLogger"
+    toConsole: str = "ConsoleLogger"
 
 
 class LoggerFactoryImpl(LoggerFactory):
@@ -28,5 +30,7 @@ class LoggerFactoryImpl(LoggerFactory):
             return FileLogger()
         elif name == Loggers.toMongoDB.value or loggerEnum == Loggers.toMongoDB:
             return MongoDBLogger(MongoClient(self.configs.mongodb_config['url']))
+        elif name == Loggers.toConsole.value or loggerEnum == Loggers.toConsole:
+            return ConsoleLogger()
         else:
             raise ValueError("Logger not found. Check function args")
