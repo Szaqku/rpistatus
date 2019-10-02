@@ -27,7 +27,7 @@ class LoggerFactoryImpl(LoggerFactory):
             raise ValueError("Choose one logger by giving name OR loggerEnum")
 
         if name == Loggers.toFile.value or loggerEnum == Loggers.toFile:
-            return FileLogger()
+            return FileLogger(self.configs.file_config['path'])
         elif name == Loggers.toMongoDB.value or loggerEnum == Loggers.toMongoDB:
             return MongoDBLogger(MongoClient(self.configs.mongodb_config['url']))
         elif name == Loggers.toConsole.value or loggerEnum == Loggers.toConsole:
