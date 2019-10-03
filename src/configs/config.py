@@ -18,7 +18,11 @@ app_config = {
 
     # implemented:
     # MongoDBLogger / FileLogger / ConsoleLogger
-    "logger": "ConsoleLogger"
+    "logger": "ConsoleLogger",
+
+    # endpoint
+    "host": "127.0.0.1",
+    "port": 1410
 }
 
 # Do not touch
