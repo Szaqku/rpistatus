@@ -1,34 +1,41 @@
 import importlib
 import sys
-import json
 
 from flask import Flask
 import flask_restful
-from pymongo import MongoClient
 from pymongo.collection import Collection
+
+from src.main.StatusCheckerThread import StatusCheckerThread
+from src.services.LoggerFactory import LoggerFactory
+from src.services.impl.ConsoleLogger import ConsoleLogger
+from src.services.impl.LoggerFactoryImpl import Loggers
+from src.services.resources.Status import Status
+from src.services.resources.Statuses import StatusList
+from tests.dummies.DummyCpuLoadStatusChecker import DummyCpuLoadStatusChecker
+from tests.dummies.DummyMemoryStatusChecker import DummyMemoryStatusChecker
+from tests.dummies.DummyNetworkStatusChecker import DummyNetworkStatusChecker
+from tests.dummies.DummyTempStatusChecker import DummyTempStatusChecker
 
 
 class StatusRestApi(flask_restful.Api):
     collection: Collection
 
-    class Status(flask_restful.Resource):
-        def __init__(self, databaseName: str = "test", collectionName: str = "rpistatus"):
-            self.mongoClient = MongoClient(configs.mongodb_config['url'])
-            self.collection = self.mongoClient[databaseName][collectionName]
-
-        def get(self):
-            ls = []
-            for element in self.collection.find({}).limit(100):
-                ls.append(element)
-            return json.dumps(ls)
-
-        def __del__(self):
-            self.mongoClient.close()
-
-    def __init__(self, import_name, configs):
+    def __init__(self, import_name, configs, statusTread: StatusCheckerThread):
         super().__init__(import_name)
+        self.statusTread = statusTread
         self.configs = configs
-        self.add_resource(StatusRestApi.Status, "/status/")
+        self.add_resource(Status, "/status/last",
+                          resource_class_args=(statusThread,),
+                          endpoint="lastStatus")
+        self.add_resource(StatusList, "/status/",
+                          resource_class_args=(configs,),
+                          endpoint="fullStatusList")
+        self.add_resource(StatusList, "/status/<int:sinceTimestamp>/<int:untilTimestamp>",
+                          resource_class_args=(configs,),
+                          endpoint="statusListBetweenDates")
+        self.add_resource(StatusList, "/status/<int:sinceTimestamp>",
+                          resource_class_args=(configs,),
+                          endpoint="statusListSince")
 
 
 if __name__ == '__main__':
@@ -45,6 +52,14 @@ if __name__ == '__main__':
     app_config = configs.app_config
     print("Loaded config file: ", configs)
 
+    statusThread = StatusCheckerThread(ConsoleLogger(),
+                                       DummyMemoryStatusChecker(),
+                                       DummyTempStatusChecker(),
+                                       DummyCpuLoadStatusChecker(),
+                                       DummyNetworkStatusChecker(),
+                                       10)
+
+    statusThread.start()
     app = Flask(__name__)
-    api = StatusRestApi(app, configs)
-    app.run(debug=True)
+    api = StatusRestApi(app, configs, statusThread)
+    app.run(host=app_config['host'], port=app_config['port'])
