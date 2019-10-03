@@ -18,7 +18,7 @@ class MongoDBLogger(Logger):
 
         print(data)
 
-        collection.insert_one(data)
+        collection.insert_one(data.copy())
 
     def __del__(self):
         self.mongodb.close()
