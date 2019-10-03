@@ -1,20 +1,18 @@
 import importlib
 import sys
 
-from flask import Flask
 import flask_restful
+from flask import Flask
 from pymongo.collection import Collection
 
 from src.main.StatusCheckerThread import StatusCheckerThread
-from src.services.LoggerFactory import LoggerFactory
-from src.services.impl.ConsoleLogger import ConsoleLogger
-from src.services.impl.LoggerFactoryImpl import Loggers
+from src.services.impl.LoggerFactoryImpl import LoggerFactoryImpl
+from src.services.impl.RpiCpuLoadStatusChecker import RpiCpuLoadStatusChecker
+from src.services.impl.RpiMemoryStatusChecker import RpiMemoryStatusChecker
+from src.services.impl.RpiNetworkStatusChecker import RpiNetworkStatusChecker
+from src.services.impl.RpiTempStatusChecker import RpiTempStatusChecker
 from src.services.resources.Status import Status
 from src.services.resources.Statuses import StatusList
-from tests.dummies.DummyCpuLoadStatusChecker import DummyCpuLoadStatusChecker
-from tests.dummies.DummyMemoryStatusChecker import DummyMemoryStatusChecker
-from tests.dummies.DummyNetworkStatusChecker import DummyNetworkStatusChecker
-from tests.dummies.DummyTempStatusChecker import DummyTempStatusChecker
 
 
 class StatusRestApi(flask_restful.Api):
@@ -52,12 +50,13 @@ if __name__ == '__main__':
     app_config = configs.app_config
     print("Loaded config file: ", configs)
 
-    statusThread = StatusCheckerThread(ConsoleLogger(),
-                                       DummyMemoryStatusChecker(),
-                                       DummyTempStatusChecker(),
-                                       DummyCpuLoadStatusChecker(),
-                                       DummyNetworkStatusChecker(),
-                                       10)
+    statusThread = StatusCheckerThread(LoggerFactoryImpl(configs).get_logger(name=app_config['logger']),
+                                       RpiMemoryStatusChecker(),
+                                       RpiTempStatusChecker(),
+                                       RpiCpuLoadStatusChecker(),
+                                       RpiNetworkStatusChecker(),
+                                       app_config['loggingInterval']
+                                       )
 
     statusThread.start()
     app = Flask(__name__)
