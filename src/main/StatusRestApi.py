@@ -18,9 +18,9 @@ from src.services.resources.Statuses import StatusList
 class StatusRestApi(flask_restful.Api):
     collection: Collection
 
-    def __init__(self, import_name, configs, statusTread: StatusCheckerThread):
+    def __init__(self, import_name, configs, statusThread: StatusCheckerThread):
         super().__init__(import_name)
-        self.statusTread = statusTread
+        self.statusTread = statusThread
         self.configs = configs
         self.add_resource(Status, "/status/last",
                           resource_class_args=(statusThread,),
