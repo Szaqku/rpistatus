@@ -6,7 +6,6 @@ mongodb_config = {
     "protocol": "mongodb+srv",
     "cluster": "",
     "urlParams": "retryWrites=true&w=majority",
-    "urlPattern": "{protocol}://{username}:{password}@{cluster}.mongodb.net/{database}?{urlParams}"
 }
 
 file_config = {
@@ -19,8 +18,13 @@ app_config = {
 
     # implemented:
     # MongoDBLogger / FileLogger / ConsoleLogger
-    "logger": "ConsoleLogger"
+    "logger": "ConsoleLogger",
+
+    # endpoint
+    "host": "127.0.0.1",
+    "port": 1410
 }
 
 # Do not touch
+mongodb_config["urlPattern"] = "{protocol}://{username}:{password}@{cluster}.mongodb.net/{database}?{urlParams}"
 mongodb_config['url'] = mongodb_config['urlPattern'].format(**mongodb_config)

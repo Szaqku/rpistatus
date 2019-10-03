@@ -33,6 +33,7 @@ class StatusCheckerThread(Thread):
                  networkChecker: NetworkStatusChecker,
                  refreshInterval: int = 60):
         super().__init__()
+        self.setDaemon(True)
         self.networkChecker = networkChecker
         self.cpuLoadChecker = cpuLoadChecker
         self.refreshInterval = refreshInterval
@@ -87,4 +88,5 @@ if __name__ == "__main__":
                              RpiNetworkStatusChecker(),
                              app_config['loggingInterval']
                              ) as th:
+        th.setDaemon(False)
         th.start()
