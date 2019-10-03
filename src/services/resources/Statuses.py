@@ -18,7 +18,7 @@ class StatusList(flask_restful.Resource):
             return self.jsonEncoder.decode_to_dict(
                 list(self.collection.find({"timestamp": {"$gt": sinceTimestamp}}).limit(limit)))
 
-        return self.jsonEncoder.decode_to_dict((self.collection.find({}).limit(100)))
+        return self.jsonEncoder.decode_to_dict(list(self.collection.find({}).limit(100)))
 
     def __del__(self):
         self.mongoClient.close()
