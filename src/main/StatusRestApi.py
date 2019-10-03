@@ -1,5 +1,6 @@
 import importlib
 import sys
+import json
 
 from flask import Flask
 import flask_restful
@@ -12,11 +13,14 @@ class StatusRestApi(flask_restful.Api):
 
     class Status(flask_restful.Resource):
         def __init__(self, databaseName: str = "test", collectionName: str = "rpistatus"):
-            self.mongoClient = MongoClient(configs['mongodb_config']['url'])
+            self.mongoClient = MongoClient(configs.mongodb_config['url'])
             self.collection = self.mongoClient[databaseName][collectionName]
 
         def get(self):
-            return self.collection.find()
+            ls = []
+            for element in self.collection.find({}).limit(100):
+                ls.append(element)
+            return json.dumps(ls)
 
         def __del__(self):
             self.mongoClient.close()
@@ -24,7 +28,7 @@ class StatusRestApi(flask_restful.Api):
     def __init__(self, import_name, configs):
         super().__init__(import_name)
         self.configs = configs
-        self.add_resource(StatusRestApi, "/status/")
+        self.add_resource(StatusRestApi.Status, "/status/")
 
 
 if __name__ == '__main__':
@@ -42,5 +46,5 @@ if __name__ == '__main__':
     print("Loaded config file: ", configs)
 
     app = Flask(__name__)
-    api = StatusRestApi(__name__, configs)
-    api.init_app(app)
+    api = StatusRestApi(app, configs)
+    app.run(debug=True)
