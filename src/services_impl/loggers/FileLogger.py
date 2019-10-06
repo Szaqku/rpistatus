@@ -1,6 +1,6 @@
 from typing import TextIO
 
-from src.services.Logger import Logger
+from src.services.loggers.Logger import Logger
 
 
 class FileLogger(Logger):

@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 
-from src.services.Logger import Logger
+from src.services.loggers.Logger import Logger
 
 
 class MongoDBLogger(Logger):
@@ -15,10 +15,7 @@ class MongoDBLogger(Logger):
 
     def log(self, data: dict):
         collection = self.mongodb[self.database][self.collection]
-
-        print(data)
-
-        collection.insert_one(data)
+        collection.insert_one(data.copy())
 
     def __del__(self):
         self.mongodb.close()

@@ -1,4 +1,4 @@
-from src.services.Logger import Logger
+from src.services.loggers.Logger import Logger
 
 
 class ConsoleLogger(Logger):
