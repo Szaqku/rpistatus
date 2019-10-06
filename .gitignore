@@ -3,3 +3,4 @@ src/configs/_config.py
 tests/test.py
 
 .idea/
+venv
