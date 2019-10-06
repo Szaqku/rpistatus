@@ -1,6 +1,6 @@
 import json
 
-from src.services.NetworkStatusChecker import NetworkStatusChecker
+from src.services.checkers.NetworkStatusChecker import NetworkStatusChecker
 
 
 class DummyNetworkStatusChecker(NetworkStatusChecker):

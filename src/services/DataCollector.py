@@ -1,8 +1,8 @@
 from abc import abstractmethod
 
 
-class MemoryStatusChecker:
+class DataCollector:
 
     @abstractmethod
-    def get_mem_usage(self):
+    def get_data(self) -> dict:
         pass

@@ -1,4 +1,4 @@
-from src.services.MemoryStatusChecker import MemoryStatusChecker
+from src.services.checkers.MemoryStatusChecker import MemoryStatusChecker
 
 
 class DummyMemoryStatusChecker(MemoryStatusChecker):

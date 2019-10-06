@@ -1,6 +1,6 @@
 from abc import abstractmethod
 
-from src.services.Logger import Logger
+from src.services.loggers.Logger import Logger
 
 
 class LoggerFactory:

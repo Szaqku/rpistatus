@@ -1,12 +1,12 @@
 import os
 from re import split
 
-from src.services.CpuLoadStatusChecker import CpuLoadStatusChecker
+from src.services.DataCollector import DataCollector
 
 
-class RpiCpuLoadStatusChecker(CpuLoadStatusChecker):
+class RpiCpuLoadStatusChecker(DataCollector):
 
-    def get_avg_cpu_load(self) -> dict:
+    def get_data(self) -> dict:
         avg_load = os.popen("cat /proc/loadavg").read().strip()
         nproc = int(os.popen("nproc").read().strip())
 

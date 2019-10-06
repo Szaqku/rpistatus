@@ -1,4 +1,4 @@
-from src.services.CpuLoadStatusChecker import CpuLoadStatusChecker
+from src.services.checkers.CpuLoadStatusChecker import CpuLoadStatusChecker
 
 
 class DummyCpuLoadStatusChecker(CpuLoadStatusChecker):

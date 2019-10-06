@@ -2,11 +2,11 @@ from enum import Enum
 
 from pymongo import MongoClient
 
-from src.services.Logger import Logger
-from src.services.LoggerFactory import LoggerFactory
-from src.services.impl.ConsoleLogger import ConsoleLogger
-from src.services.impl.FileLogger import FileLogger
-from src.services.impl.MongoDBLogger import MongoDBLogger
+from src.services.loggers.Logger import Logger
+from src.services.loggers.LoggerFactory import LoggerFactory
+from src.impl.services.loggers.ConsoleLogger import ConsoleLogger
+from src.impl.services.loggers.FileLogger import FileLogger
+from src.impl.services.loggers.MongoDBLogger import MongoDBLogger
 
 
 class Loggers(Enum):

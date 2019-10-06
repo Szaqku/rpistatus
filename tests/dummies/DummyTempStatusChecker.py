@@ -1,4 +1,4 @@
-from src.services.TempStatusChecker import TempStatusChecker
+from src.services.checkers.TempStatusChecker import TempStatusChecker
 
 
 class DummyTempStatusChecker(TempStatusChecker):
