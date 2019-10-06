@@ -32,8 +32,8 @@ if __name__ == '__main__':
         ("network", RpiNetworkStatusChecker())
     ]
 
-    statusThread = StatusCheckerThread(LoggerFactoryImpl(configs).get_logger(app_config['logger']), app_config['loggingInterval']
-                                       )
+    statusThread = StatusCheckerThread(LoggerFactoryImpl(configs).get_logger(app_config['logger']),
+                                       app_config['loggingInterval'])
 
     statusThread.start()
     app = Flask(__name__)

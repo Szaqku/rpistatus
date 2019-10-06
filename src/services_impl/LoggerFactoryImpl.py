@@ -4,9 +4,9 @@ from pymongo import MongoClient
 
 from src.services.loggers.Logger import Logger
 from src.services.loggers.LoggerFactory import LoggerFactory
-from src.impl.services.loggers.ConsoleLogger import ConsoleLogger
-from src.impl.services.loggers.FileLogger import FileLogger
-from src.impl.services.loggers.MongoDBLogger import MongoDBLogger
+from src.services_impl.loggers import ConsoleLogger
+from src.services_impl.loggers.FileLogger import FileLogger
+from src.services_impl.loggers.MongoDBLogger import MongoDBLogger
 
 
 class Loggers(Enum):
