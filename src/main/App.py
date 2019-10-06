@@ -33,6 +33,7 @@ if __name__ == '__main__':
     ]
 
     statusThread = StatusCheckerThread(LoggerFactoryImpl(configs).get_logger(app_config['logger']),
+                                       data_collectors,
                                        app_config['loggingInterval'])
 
     statusThread.start()

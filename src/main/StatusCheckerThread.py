@@ -10,7 +10,7 @@ class StatusCheckerThread(Thread):
 
     def __init__(self, logger: Logger, data_collectors_map: list, refreshInterval: int = 60):
         super().__init__()
-        self.lastStatus = None
+        self.lastStatus = {}
         self.logger = logger
         self.data_collectors_map = data_collectors_map
         self.refreshInterval = refreshInterval
@@ -21,8 +21,8 @@ class StatusCheckerThread(Thread):
         while True:
             data = {}
 
-            for field_name, data in self.data_collectors_map:
-                data[field_name] = data
+            for field_name, collector in self.data_collectors_map:
+                data[field_name] = collector.get_data()
 
             data['timestamp'] = datetime.now().timestamp()
 
