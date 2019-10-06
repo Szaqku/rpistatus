@@ -27,6 +27,7 @@ class StatusCheckerThread(Thread):
             data['timestamp'] = datetime.now().timestamp()
 
             self.logger.log(data)
+            self.lastStatus = data
 
             time.sleep(self.refreshInterval)
 
