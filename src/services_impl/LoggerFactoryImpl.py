@@ -4,7 +4,7 @@ from pymongo import MongoClient
 
 from src.services.loggers.Logger import Logger
 from src.services.loggers.LoggerFactory import LoggerFactory
-from src.services_impl.loggers import ConsoleLogger
+from src.services_impl.loggers.ConsoleLogger import ConsoleLogger
 from src.services_impl.loggers.FileLogger import FileLogger
 from src.services_impl.loggers.MongoDBLogger import MongoDBLogger
 
