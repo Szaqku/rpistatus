@@ -1,6 +1,6 @@
 import json
 
-from src.services.Respository import Repository
+from src.services.repositories.Respository import Repository
 
 
 def remove_if(function, elements):

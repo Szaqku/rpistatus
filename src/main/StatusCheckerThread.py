@@ -8,10 +8,10 @@ from src.services.loggers.Logger import Logger
 
 class StatusCheckerThread(Thread):
 
-    def __init__(self, logger: Logger, data_collectors_map: list, refreshInterval: int = 60):
+    def __init__(self, loggers: tuple, data_collectors_map: list, refreshInterval: int = 60):
         super().__init__()
         self.lastStatus = {}
-        self.logger = logger
+        self.loggers = loggers
         self.data_collectors_map = data_collectors_map
         self.refreshInterval = refreshInterval
 
@@ -26,7 +26,9 @@ class StatusCheckerThread(Thread):
 
             data['timestamp'] = datetime.now().timestamp()
 
-            self.logger.log(data)
+            for logger in self.loggers:
+                logger.log(data)
+
             self.lastStatus = data
 
             time.sleep(self.refreshInterval)

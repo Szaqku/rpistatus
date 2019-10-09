@@ -1,7 +1,7 @@
 
 from pymongo import MongoClient
 
-from src.services.Respository import Repository
+from src.services.repositories.Respository import Repository
 from src.services.utlis.JSONEncoder import JSONEncoder
 
 
