@@ -8,21 +8,29 @@ mongodb_config = {
     "urlParams": "retryWrites=true&w=majority",
 }
 
-file_config = {
-    "path": "logs.log"
-}
-
 app_config = {
     # in seconds
-    "loggingInterval": 60,
+    "loggingInterval": 10,
 
     # implemented:
-    # MongoDBLogger / FileLogger / ConsoleLogger
-    "logger": "ConsoleLogger",
+    # MongoDBLogger
+    # FileLogger
+    "loggers": {
+        "console": True,
+        "mongodb": False,
+        "file": False,
+    },
+
+    # mongodb or file
+    "repository": "mongodb",
 
     # endpoint
-    "host": "127.0.0.1",
-    "port": 1410
+    "host": "0.0.0.0",
+    "port": 9812
+}
+
+file_logger_config = {
+    "path": "logs.log"
 }
 
 # Do not touch
