@@ -10,6 +10,7 @@ from src.services_impl.checkers.RpiCpuLoadStatusChecker import RpiCpuLoadStatusC
 from src.services_impl.checkers.RpiMemoryStatusChecker import RpiMemoryStatusChecker
 from src.services_impl.checkers.RpiNetworkStatusChecker import RpiNetworkStatusChecker
 from src.services_impl.checkers.RpiTempStatusChecker import RpiTempStatusChecker
+from src.services_impl.checkers.UpdateStatusChecker import UpdateStatusChecker
 from src.services_impl.checkers.UptimeStatusChecker import UptimeStatusChecker
 from src.services_impl.repositories.RepositoryFactoryImpl import RepositoryFactoryImpl
 
@@ -32,6 +33,7 @@ if __name__ == '__main__':
 
     data_collectors = [
         ("uptime", UptimeStatusChecker()),
+        ("update", UpdateStatusChecker()),
         ("memory", RpiMemoryStatusChecker()),
         ("temperature", RpiTempStatusChecker()),
         ("cpu_load", RpiCpuLoadStatusChecker()),
