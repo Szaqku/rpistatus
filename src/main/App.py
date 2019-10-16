@@ -47,5 +47,5 @@ if __name__ == '__main__':
 
     statusThread.start()
     app = Flask(__name__)
-    api = StatusRestApi(app, repositoryFactory.get_repository("main_data_source"), statusThread)
+    api = StatusRestApi(app, repositoryFactory.get_repository(app_config["main_data_source"]), statusThread)
     app.run(host=app_config['host'], port=app_config['port'])
