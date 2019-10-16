@@ -1,5 +1,3 @@
-from pymongo import MongoClient
-
 from src.services.loggers.Logger import Logger
 from src.services_impl.repositories.MongoDBStatusRepository import MongoDBStatusRepository
 

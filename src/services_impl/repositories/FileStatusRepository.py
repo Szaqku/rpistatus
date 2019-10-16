@@ -1,13 +1,11 @@
 import json
+import os
+import re
 
 from src.services.repositories.Respository import Repository
 
 
-def remove_if(function, elements):
-    for el in elements:
-        if function(el):
-            del el
-
+# TODO: Think about better solution
 
 class FileStatusRepository(Repository):
 
@@ -17,49 +15,39 @@ class FileStatusRepository(Repository):
     def get(self, filters: dict):
         # Works with timestamp filter only
         # since and until keys as filters for timestamp param
-
-        if "since" in filters.keys() and "until" in filters.keys():
-            return self.perform_operation_on_file(lambda data:
-                                                  list(
-                                                      filter(
-                                                          lambda el:
-                                                          el['timestamp'] >= filters["since"]
-                                                          and el["timestamp"] < filters["until"], data)
-                                                  ), "r+")
-        elif "since" in filters.keys():
-            return self.perform_operation_on_file(lambda data:
-                                                  list(
-                                                      filter(
-                                                          lambda el: el['timestamp'] >= filters["since"], data)
-                                                  ), "r+")
+        return self.read_until(lambda x: int(re.search("\"timestamp\": (\\d+)", x)[1]) < filters['timestamp']['$gt'])
 
     def create(self, data: dict):
-        self.perform_operation_on_file(lambda records: records.insert(0, data), "w+")
+        self.save_record(data)
 
     def delete(self, filters: dict):
-        # Works with timestamp filter only
-        # since and until keys as filters for timestamp param
+        # No need to implement this for now
+        pass
 
-        if "since" in filters.keys() and "until" in filters.keys():
-            return self.perform_operation_on_file(lambda data:
-                                                  remove_if(
-                                                          lambda el:
-                                                          el['timestamp'] >= filters["since"]
-                                                          and el["timestamp"] < filters["until"], data)
-                                                  , "r+")
-        elif "since" in filters.keys():
-            return self.perform_operation_on_file(lambda data:
-                                                  remove_if(
-                                                      lambda el: el['timestamp'] >= filters["since"], data)
-                                                  , "r+")
+    def save_record(self, record):
+        with open(self.path_to_file, "a+") as file_handler:
+            json.dump(record, file_handler)
+            file_handler.write("\n")
 
-    def perform_operation_on_file(self, operation, file_mode):
-        file_handler = open(self.path_to_file, file_mode)
-        records = json.load(file_handler)
+    def read_until(self, until_condition):
+        return [json.loads(record) for record in readlines_reverse(self.path_to_file, until_condition)]
 
-        response = operation(records)
 
-        file_handler.truncate()
-        json.dump(records, file_handler)
-
-        return response
+def readlines_reverse(filename, condition):
+    with open(filename) as qfile:
+        qfile.seek(0, os.SEEK_END)
+        position = qfile.tell()
+        line = ''
+        while position >= 0:
+            qfile.seek(position)
+            next_char = qfile.read(1)
+            if next_char == "\n":
+                if line != "":
+                    if condition(line[::-1]):
+                        return
+                    yield line[::-1]
+                line = ''
+            else:
+                line += next_char
+            position -= 1
+        yield line[::-1]

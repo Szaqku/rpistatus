@@ -1,17 +1,13 @@
 from typing import TextIO
 
 from src.services.loggers.Logger import Logger
+from src.services_impl.repositories.FileStatusRepository import FileStatusRepository
 
 
 class FileLogger(Logger):
-    fileHandler: TextIO
 
-    def __init__(self, fileName):
-        self.fileHandler = open(fileName, "a+")
+    def __init__(self, repository: FileStatusRepository):
+        self.repository = repository
 
     def log(self, data: any):
-        self.fileHandler.write(str(data)+"\n")
-        self.fileHandler.flush()
-
-    def __del__(self):
-        self.fileHandler.close()
+        self.repository.create(data)

@@ -5,14 +5,11 @@ from flask import Flask
 
 from src.main.StatusCheckerThread import StatusCheckerThread
 from src.main.StatusRestApi import StatusRestApi
+from src.services_impl.loggers.LoggerFactoryImpl import LoggerFactoryImpl
 from src.services_impl.checkers.RpiCpuLoadStatusChecker import RpiCpuLoadStatusChecker
 from src.services_impl.checkers.RpiMemoryStatusChecker import RpiMemoryStatusChecker
 from src.services_impl.checkers.RpiNetworkStatusChecker import RpiNetworkStatusChecker
 from src.services_impl.checkers.RpiTempStatusChecker import RpiTempStatusChecker
-from src.services_impl.loggers.ConsoleLogger import ConsoleLogger
-from src.services_impl.loggers.FileLogger import FileLogger
-from src.services_impl.loggers.MongoDBLogger import MongoDBLogger
-from src.services_impl.repositories.MongoDBStatusRepository import MongoDBStatusRepository
 from src.services_impl.repositories.RepositoryFactoryImpl import RepositoryFactoryImpl
 
 if __name__ == '__main__':
@@ -29,7 +26,8 @@ if __name__ == '__main__':
     app_config = configs.app_config
     print("Loaded config file: ", configs)
 
-    repository = RepositoryFactoryImpl().get_repository(app_config['repository'], configs)
+    repositoryFactory = RepositoryFactoryImpl(configs)
+    loggerFactory = LoggerFactoryImpl(configs, repositoryFactory)
 
     data_collectors = [
         ("memory", RpiMemoryStatusChecker()),
@@ -40,13 +38,11 @@ if __name__ == '__main__':
 
     loggers = []
     if app_config['loggers']['console']:
-        loggers.append(ConsoleLogger())
+        loggers.append(loggerFactory.get_logger("console"))
     if app_config['loggers']['file']:
-        loggers.append(FileLogger(configs.file_logger_config['path']))
+        loggers.append(loggerFactory.get_logger("file"))
     if app_config['loggers']['mongodb']:
-        if not isinstance(repository, MongoDBStatusRepository):
-            raise Exception("Change repository in configs to 'mongodb'")
-        loggers.append(MongoDBLogger(repository))
+        loggers.append(loggerFactory.get_logger("mongodb"))
 
     statusThread = StatusCheckerThread(tuple(loggers),
                                        data_collectors,
@@ -54,5 +50,5 @@ if __name__ == '__main__':
 
     statusThread.start()
     app = Flask(__name__)
-    api = StatusRestApi(app, configs, statusThread)
+    api = StatusRestApi(app, repositoryFactory.get_repository("main_data_source"), statusThread)
     app.run(host=app_config['host'], port=app_config['port'])

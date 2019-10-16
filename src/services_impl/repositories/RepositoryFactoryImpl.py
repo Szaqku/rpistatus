@@ -8,12 +8,23 @@ from src.services_impl.repositories.MongoDBStatusRepository import MongoDBStatus
 
 class RepositoryFactoryImpl(RepositoryFactory):
 
-    def get_repository(self, name: str, configs) -> Repository:
+    def __init__(self, configs):
+        self.mongodb = None
+        self.file = None
+        self.configs = configs
+
+    def get_repository(self, name: str) -> Repository:
         if name == "mongodb":
-            return MongoDBStatusRepository(MongoClient(configs.mongodb_config['url']),
-                                           configs.mongodb_config['database'],
-                                           configs.mongodb_config['collection'])
+            if self.mongodb is None:
+                self.mongodb = MongoDBStatusRepository(MongoClient(self.configs.mongodb_config['url']),
+                                                       self.configs.mongodb_config['database'],
+                                                       self.configs.mongodb_config['collection'])
+            return self.mongodb
+
         elif name == "file":
-            return FileStatusRepository(configs.file_logger_config['path'])
+            if self.file is None:
+                self.file = FileStatusRepository(self.configs.file_logger_config['path'])
+            return self.file
+
         else:
             raise Exception("Repository not found. Check config file")
