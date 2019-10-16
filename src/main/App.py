@@ -37,12 +37,9 @@ if __name__ == '__main__':
     ]
 
     loggers = []
-    if app_config['loggers']['console']:
-        loggers.append(loggerFactory.get_logger("console"))
-    if app_config['loggers']['file']:
-        loggers.append(loggerFactory.get_logger("file"))
-    if app_config['loggers']['mongodb']:
-        loggers.append(loggerFactory.get_logger("mongodb"))
+    for key, flag in app_config['loggers'].items():
+        if flag:
+            loggers.append(loggerFactory.get_logger(key))
 
     statusThread = StatusCheckerThread(tuple(loggers),
                                        data_collectors,

@@ -12,17 +12,16 @@ app_config = {
     # in seconds
     "loggingInterval": 10,
 
-    # implemented:
-    # MongoDBLogger
-    # FileLogger
+    # Enable or disable loggers
     "loggers": {
         "console": True,
         "mongodb": False,
-        "file": False,
+        "file": True,
     },
 
-    # mongodb or file
-    "repository": "mongodb",
+    # choose main way to read data from
+    # mongodb / file
+    "main_data_source": "file",
 
     # endpoint
     "host": "0.0.0.0",
