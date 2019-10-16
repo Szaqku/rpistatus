@@ -10,6 +10,7 @@ from src.services_impl.checkers.RpiCpuLoadStatusChecker import RpiCpuLoadStatusC
 from src.services_impl.checkers.RpiMemoryStatusChecker import RpiMemoryStatusChecker
 from src.services_impl.checkers.RpiNetworkStatusChecker import RpiNetworkStatusChecker
 from src.services_impl.checkers.RpiTempStatusChecker import RpiTempStatusChecker
+from src.services_impl.checkers.UptimeStatusChecker import UptimeStatusChecker
 from src.services_impl.repositories.RepositoryFactoryImpl import RepositoryFactoryImpl
 
 if __name__ == '__main__':
@@ -30,6 +31,7 @@ if __name__ == '__main__':
     loggerFactory = LoggerFactoryImpl(configs, repositoryFactory)
 
     data_collectors = [
+        ("uptime", UptimeStatusChecker()),
         ("memory", RpiMemoryStatusChecker()),
         ("temperature", RpiTempStatusChecker()),
         ("cpu_load", RpiCpuLoadStatusChecker()),
